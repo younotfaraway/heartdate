@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>心动日挑战</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,7 +22,7 @@
         .question label {
             font-size: 18px;
         }
-        .question select, .question input {
+        .question input {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -43,14 +46,8 @@
 <body>
     <h1>心动日挑战</h1>
     <div class="question">
-        <label for="heartfelt-date">请输入我们的心动日：</label>
-        <select id="heartfelt-date">
-            <option value="" disabled selected>请选择日期</option>
-            <option value="2024年2月3日">2024年2月3日</option>
-            <option value="2024年2月4日">2024年2月4日</option>
-            <option value="2024年2月5日">2024年2月5日</option>
-            <!-- 添加更多日期选项 -->
-        </select>
+        <label for="datepicker">请输入我们的心动日：</label>
+        <input type="text" id="datepicker">
     </div>
     <div class="question">
         <label for="days-count">你爱我已经多少天了呢：</label>
@@ -61,19 +58,17 @@
     </div>
 
     <script>
-        // 获取当前日期
-        const today = new Date();
-        // 设置心动日为 2024年2月3日
-        const heartfeltDate = new Date('2024-02-03');
-        // 计算从心动日到今天的天数差
-        const timeDifference = today - heartfeltDate;
-        const dayDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
-
-        // 将天数显示在输入框中
-        document.getElementById('days-count').value = dayDifference;
+        $(function() {
+            $("#datepicker").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: "yy-mm-dd"
+            });
+        });
 
         function checkAnswers() {
-            const heartfeltDate = document.getElementById('heartfelt-date').value;
+            const heartfeltDate = document.getElementById('datepicker').value;
             const daysCount = document.getElementById('days-count').value;
 
             // 检查第一个问题
@@ -83,16 +78,21 @@
             }
 
             // 检查第二个问题
+            const today = new Date();
+            const targetDate = new Date(heartfeltDate);
+            const timeDifference = today - targetDate;
+            const dayDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+
             if (parseInt(daysCount) !== dayDifference) {
                 alert('第二个问题回答错误！');
                 return;
             }
 
             // 如果两个问题都回答正确，下载并打开文件
-            const fileUrl = 'https://github.com/younotfaraway/heartdate/blob/main/%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf'; // 替换为您的文件原始链接
+            const fileUrl = 'https://raw.githubusercontent.com/<您的用户名>/<仓库名称>/main/your-file.pdf'; // 替换为您的文件原始链接
             const link = document.createElement('a');
             link.href = fileUrl;
-            link.download = '%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf'; // 替换为您的文件名
+            link.download = '指定文件.pdf'; // 替换为您的文件名
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
