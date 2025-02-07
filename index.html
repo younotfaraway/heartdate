@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>我们的纪念日</title>
+    <title>我们的爱情验证</title>
     <style>
         body {
             font-family: "Microsoft YaHei", sans-serif;
@@ -10,33 +10,155 @@
             padding: 20px;
             margin: 0;
         }
-        /* 其他样式保持不变 */
+        .question {
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            max-width: 600px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        select, input {
+            padding: 10px;
+            margin: 5px;
+            border: 2px solid #ff69b4;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            display: block;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        #errorMsg {
+            color: red;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <!-- 页面结构保持不变 -->
+    <div class="question">
+        <h3>❤️ 我们的心动日 ❤️</h3>
+        <select id="yearSelect">
+            <option value="" disabled selected>-- 年份 --</option>
+        </select>
+        <select id="monthSelect">
+            <option value="" disabled selected>-- 月份 --</option>
+        </select>
+        <select id="daySelect">
+            <option value="" disabled selected>-- 日期 --</option>
+        </select>
+    </div>
+
+    <div class="question">
+        <h3>💖 你爱我的天数 💖</h3>
+        <input type="number" id="daysInput" placeholder="请输入天数">
+    </div>
+
+    <button onclick="validateAnswers()">验证我们的爱</button>
+    <div id="errorMsg">答案好像不太对哦，再仔细想想吧~</div>
 
     <script>
-        // 正确答案设置（核心修改点）
-        const CORRECT_YEAR = 2024;  // 修改年份
-        const CORRECT_MONTH = 1;    // 修改月份（0=1月）
-        const CORRECT_DAY = 3;      // 修改日期
+        // 初始化日期选择器
+        function initDatePicker() {
+            // 年份：2025到2000倒序
+            const yearSelect = document.getElementById('yearSelect');
+            for(let y = 2025; y >= 2000; y--) {
+                const option = new Option(`${y}年`, y);
+                yearSelect.add(option);
+            }
 
-        function checkAnswer() {
-            // 验证逻辑
-            const selectedDate = new Date(
-                parseInt(yearSelect.value),
-                parseInt(monthSelect.value) - 1,
-                parseInt(daySelect.value)
-            );
+            // 月份：1-12月
+            const monthSelect = document.getElementById('monthSelect');
+            for(let m = 1; m <= 12; m++) {
+                const option = new Option(`${m}月`, m);
+                monthSelect.add(option);
+            }
 
-            // 正确答案日期（使用上方定义的常量）
-            const correctDate = new Date(CORRECT_YEAR, CORRECT_MONTH, CORRECT_DAY);
-            
-            // 后续验证逻辑保持不变
+            updateDays();
         }
 
-        // 其他函数保持不变
+        // 动态更新日期
+        function updateDays() {
+            const year = parseInt(yearSelect.value);
+            const month = parseInt(monthSelect.value);
+            const daySelect = document.getElementById('daySelect');
+            
+            daySelect.innerHTML = '<option value="" disabled selected>-- 日期 --</option>';
+
+            if(year && month) {
+                const daysInMonth = new Date(year, month, 0).getDate();
+                for(let d = 1; d <= daysInMonth; d++) {
+                    daySelect.add(new Option(`${d}日`, d));
+                }
+            }
+        }
+
+        // 验证答案
+        function validateAnswers() {
+            const errorMsg = document.getElementById('errorMsg');
+            
+            // 获取用户输入
+            const userYear = parseInt(yearSelect.value);
+            const userMonth = parseInt(monthSelect.value);
+            const userDay = parseInt(daySelect.value);
+            const userDays = parseInt(document.getElementById('daysInput').value);
+
+            // 正确答案设置
+            const correctDate = new Date(2024, 1, 3); // 2024年2月3日
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            // 计算正确天数
+            const timeDiff = today - correctDate;
+            const correctDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+
+            // 验证条件
+            const isDateCorrect = (
+                userYear === 2024 &&
+                userMonth === 2 && // 注意：这里月份显示为2，但实际存储值是2（对应JavaScript的1月）
+                userDay === 3
+            );
+
+            const isDaysCorrect = (userDays === correctDays);
+
+            if(isDateCorrect && isDaysCorrect) {
+                // 触发文件下载
+                const link = document.createElement('a');
+                link.href = 'secret-file.txt';
+                link.download = '爱的秘密.txt';
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                errorMsg.style.display = 'none';
+            } else {
+                errorMsg.style.display = 'block';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // 事件监听
+        document.getElementById('yearSelect').onchange = updateDays;
+        document.getElementById('monthSelect').onchange = updateDays;
+        
+        // 初始化
+        window.onload = initDatePicker;
     </script>
 </body>
 </html>
