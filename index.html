@@ -77,21 +77,21 @@
 
             // 检查第一个问题
             if (heartfeltDate !== '2024年2月3日') {
-                alert('第一个问题回答错误！');
+                alert('错了哦');
                 return;
             }
 
             // 检查第二个问题
             if (parseInt(daysCount) !== dayDifference) {
-                alert('第二个问题回答错误！');
+                alert('错了哦');
                 return;
             }
 
             // 如果两个问题都回答正确，下载并打开文件
-            const fileUrl = 'https://raw.githubusercontent.com/<您的用户名>/<仓库名称>/main/your-file.pdf'; // 替换为您的文件原始链接
+            const fileUrl = 'https://github.com/younotfaraway/heartdate/blob/main/%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf'; // 替换为您的文件原始链接
             const link = document.createElement('a');
             link.href = fileUrl;
-            link.download = '指定文件.pdf'; // 替换为您的文件名
+            link.download = '%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf'; // 替换为您的文件名
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
