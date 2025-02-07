@@ -5,7 +5,7 @@
     <style>
         body {
             font-family: "Microsoft YaHei", sans-serif;
-            background: url('https://github.com/younotfaraway/heartdate/blob/main/F48AE47560E07F9375310E56B3EEFACC.jpg') center/cover fixed;
+            background: url('F48AE47560E07F9375310E56B3EEFACC.jpg') center/cover fixed;
             min-height: 100vh;
             padding: 20px;
             margin: 0;
@@ -77,35 +77,39 @@
     <script>
         // 初始化日期选择器
         function initDatePicker() {
-            // 初始化年份（2025到2000倒序）
             const yearSelect = document.getElementById('yearSelect');
-            for(let y = 2025; y >= 2000; y--) {
+            const monthSelect = document.getElementById('monthSelect');
+
+            // 初始化年份（2025到2000倒序）
+            for (let y = 2025; y >= 2000; y--) {
                 const option = new Option(y + '年', y);
                 yearSelect.add(option);
             }
 
             // 初始化月份（1-12月）
-            const monthSelect = document.getElementById('monthSelect');
-            for(let m = 1; m <= 12; m++) {
+            for (let m = 1; m <= 12; m++) {
                 const option = new Option(m + '月', m);
                 monthSelect.add(option);
             }
 
-            // 初始化日期
+            // 更新日期选项
             updateDays();
         }
 
         // 更新日期选项
         function updateDays() {
+            const yearSelect = document.getElementById('yearSelect');
+            const monthSelect = document.getElementById('monthSelect');
+            const daySelect = document.getElementById('daySelect');
+
             const year = parseInt(yearSelect.value);
             const month = parseInt(monthSelect.value);
-            const daySelect = document.getElementById('daySelect');
-            
+
             daySelect.innerHTML = '<option value="" disabled selected>选择日期</option>';
 
-            if(year && month) {
+            if (year && month) {
                 const daysInMonth = new Date(year, month, 0).getDate();
-                for(let d = 1; d <= daysinmonth; d++) {
+                for (let d = 1; d <= daysInMonth; d++) {
                     const option = new Option(d + '日', d);
                     daySelect.add(option);
                 }
@@ -114,8 +118,11 @@
 
         // 验证答案
         function validateAnswers() {
+            const yearSelect = document.getElementById('yearSelect');
+            const monthSelect = document.getElementById('monthSelect');
+            const daySelect = document.getElementById('daySelect');
             const errorMsg = document.getElementById('errorMsg');
-            
+
             // 获取用户输入
             const userYear = parseInt(yearSelect.value);
             const userMonth = parseInt(monthSelect.value);
@@ -140,7 +147,7 @@
 
             const isDaysCorrect = (userDays === correctDays);
 
-            if(isDateCorrect && isDaysCorrect) {
+            if (isDateCorrect && isDaysCorrect) {
                 // 触发文件下载
                 const link = document.createElement('a');
                 link.href = 'secret-file.txt';
@@ -160,7 +167,7 @@
         // 事件绑定
         document.getElementById('yearSelect').addEventListener('change', updateDays);
         document.getElementById('monthSelect').addEventListener('change', updateDays);
-        
+
         // 页面加载初始化
         window.addEventListener('load', initDatePicker);
     </script>
