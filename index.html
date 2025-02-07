@@ -1,83 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>我们的专属纪念日</title>
+    <title>我们的纪念日</title>
     <style>
         body {
             font-family: "Microsoft YaHei", sans-serif;
-            background: url('你的背景图链接') no-repeat center center fixed;
-            background-size: cover;
-            padding: 20px;
+            background: url('你的背景图链接') center/cover fixed;
             min-height: 100vh;
-        }
-        .question {
-            margin: 20px auto;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            max-width: 600px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        select {
-            padding: 8px 12px;
-            margin: 5px;
-            border: 2px solid #ff69b4;
-            border-radius: 5px;
-            font-size: 16px;
-            width: 120px;
+            margin: 0;
         }
         /* 其他样式保持不变 */
     </style>
 </head>
 <body>
-    <div class="question">
-        <h3>❤️ 请输入我们的心动日 ❤️</h3>
-        <select id="yearSelect">
-            <option value="" selected disabled>-- 选择年份 --</option>
-        </select>
-        <select id="monthSelect">
-            <option value="" selected disabled>-- 选择月份 --</option>
-        </select>
-        <select id="daySelect">
-            <option value="" selected disabled>-- 选择日期 --</option>
-        </select>
-    </div>
-
-    <!-- 其他HTML内容保持不变 -->
+    <!-- 页面结构保持不变 -->
 
     <script>
-        // 修正后的初始化函数
-        function initDatePicker() {
-            const yearSelect = document.getElementById('yearSelect');
+        // 正确答案设置（核心修改点）
+        const CORRECT_YEAR = 2024;  // 修改年份
+        const CORRECT_MONTH = 1;    // 修改月份（0=1月）
+        const CORRECT_DAY = 3;      // 修改日期
+
+        function checkAnswer() {
+            // 验证逻辑
+            const selectedDate = new Date(
+                parseInt(yearSelect.value),
+                parseInt(monthSelect.value) - 1,
+                parseInt(daySelect.value)
+            );
+
+            // 正确答案日期（使用上方定义的常量）
+            const correctDate = new Date(CORRECT_YEAR, CORRECT_MONTH, CORRECT_DAY);
             
-            // 先清空现有选项
-            yearSelect.innerHTML = '<option value="" selected disabled>-- 选择年份 --</option>';
-
-            // 从2025倒序生成到2000年（包含2000）
-            for(let y = 2025; y >= 2000; y--) {
-                const option = document.createElement('option');
-                option.value = y;
-                option.text = y + '年';
-                yearSelect.appendChild(option);
-            }
-
-            // 初始化月份（保持原有逻辑）
-            const monthSelect = document.getElementById('monthSelect');
-            monthSelect.innerHTML = '<option value="" selected disabled>-- 选择月份 --</option>';
-            for(let m = 1; m <= 12; m++) {
-                const option = document.createElement('option');
-                option.value = m;
-                option.text = m + '月';
-                monthSelect.appendChild(option);
-            }
-
-            // 初始化日期
-            updateDays();
+            // 后续验证逻辑保持不变
         }
-
-        // 确保事件监听正确绑定
-        document.getElementById('yearSelect').onchange = updateDays;
-        document.getElementById('monthSelect').onchange = updateDays;
 
         // 其他函数保持不变
     </script>
