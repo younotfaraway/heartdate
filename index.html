@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>心动日挑战</title>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,7 +19,7 @@
         .question label {
             font-size: 18px;
         }
-        .question input {
+        .question select, .question input {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -46,8 +43,16 @@
 <body>
     <h1>心动日挑战</h1>
     <div class="question">
-        <label for="datepicker">请输入我们的心动日：</label>
-        <input type="text" id="datepicker">
+        <label for="year">请选择年份：</label>
+        <select id="year"></select>
+    </div>
+    <div class="question">
+        <label for="month">请选择月份：</label>
+        <select id="month"></select>
+    </div>
+    <div class="question">
+        <label for="day">请选择日期：</label>
+        <select id="day"></select>
     </div>
     <div class="question">
         <label for="days-count">你爱我已经多少天了呢：</label>
@@ -58,31 +63,76 @@
     </div>
 
     <script>
-        $(function() {
-            $("#datepicker").datepicker({
-                changeMonth: true,
-                changeYear: true,
-                showButtonPanel: true,
-                dateFormat: "yy-mm-dd"
-            });
-        });
+        // 获取当前日期
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth() + 1;
+        const currentDay = today.getDate();
+
+        // 填充年份下拉框
+        const yearSelect = document.getElementById('year');
+        for (let year = currentYear - 100; year <= currentYear; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
+
+        // 填充月份下拉框
+        const monthSelect = document.getElementById('month');
+        for (let month = 1; month <= 12; month++) {
+            const option = document.createElement('option');
+            option.value = month;
+            option.textContent = month < 10 ? '0' + month : month;
+            monthSelect.appendChild(option);
+        }
+
+        // 填充日期下拉框
+        const daySelect = document.getElementById('day');
+        function updateDays() {
+            const selectedYear = parseInt(yearSelect.value);
+            const selectedMonth = parseInt(monthSelect.value);
+            const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+            daySelect.innerHTML = '';
+            for (let day = 1; day <= daysInMonth; day++) {
+                const option = document.createElement('option');
+                option.value = day;
+                option.textContent = day < 10 ? '0' + day : day;
+                daySelect.appendChild(option);
+            }
+        }
+
+        // 初始化日期下拉框
+        yearSelect.addEventListener('change', updateDays);
+        monthSelect.addEventListener('change', updateDays);
+
+        // 默认选择当前日期
+        yearSelect.value = currentYear;
+        monthSelect.value = currentMonth;
+        daySelect.value = currentDay;
+
+        // 更新日期下拉框
+        updateDays();
+
+        // 计算从心动日到今天的天数
+        const heartfeltDate = new Date('2024-02-03');
+        const timeDifference = today - heartfeltDate;
+        const dayDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+        document.getElementById('days-count').value = dayDifference;
 
         function checkAnswers() {
-            const heartfeltDate = document.getElementById('datepicker').value;
+            const selectedYear = yearSelect.value;
+            const selectedMonth = monthSelect.value;
+            const selectedDay = daySelect.value;
             const daysCount = document.getElementById('days-count').value;
 
             // 检查第一个问题
-            if (!heartfeltDate) {
-                alert('请先选择我们的心动日！');
+            if (selectedYear !== '2024' || selectedMonth !== '02' || selectedDay !== '03') {
+                alert('第一个问题回答错误！');
                 return;
             }
 
             // 检查第二个问题
-            const today = new Date();
-            const targetDate = new Date(heartfeltDate);
-            const timeDifference = today - targetDate;
-            const dayDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
-
             if (parseInt(daysCount) !== dayDifference) {
                 alert('第二个问题回答错误！');
                 return;
