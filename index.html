@@ -45,6 +45,7 @@
     <div class="question">
         <label for="heartfelt-date">请输入我们的心动日：</label>
         <select id="heartfelt-date">
+            <option value="" disabled selected>请选择日期</option>
             <option value="2024年2月3日">2024年2月3日</option>
             <option value="2024年2月4日">2024年2月4日</option>
             <option value="2024年2月5日">2024年2月5日</option>
@@ -76,22 +77,22 @@
             const daysCount = document.getElementById('days-count').value;
 
             // 检查第一个问题
-            if (heartfeltDate !== '2024年2月3日') {
-                alert('错了哦');
+            if (!heartfeltDate) {
+                alert('请先选择我们的心动日！');
                 return;
             }
 
             // 检查第二个问题
             if (parseInt(daysCount) !== dayDifference) {
-                alert('错了哦');
+                alert('第二个问题回答错误！');
                 return;
             }
 
             // 如果两个问题都回答正确，下载并打开文件
-            const fileUrl = 'https://github.com/younotfaraway/heartdate/blob/main/%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf'; // 替换为您的文件原始链接
+            const fileUrl = 'https://raw.githubusercontent.com/<您的用户名>/<仓库名称>/main/your-file.pdf'; // 替换为您的文件原始链接
             const link = document.createElement('a');
             link.href = fileUrl;
-            link.download = '%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf'; // 替换为您的文件名
+            link.download = '指定文件.pdf'; // 替换为您的文件名
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
