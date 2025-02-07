@@ -3,35 +3,19 @@
 <head>
     <title>我们的爱情问答</title>
     <style>
-        body {
-            font-family: Microsoft YaHei;
-            background: pink;
-            padding: 20px;
-        }
-        .question {
-            margin: 20px;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-        }
-        button {
-            padding: 10px 20px;
-            background: #ff69b4;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+        /* 保持原有样式不变 */
+        body { font-family: Microsoft YaHei; background: pink; padding: 20px; }
+        .question { margin: 20px; padding: 15px; background: white; border-radius: 10px; }
+        select { margin: 0 5px; padding: 5px; }
+        button { padding: 10px 20px; background: #ff69b4; color: white; border: none; border-radius: 5px; }
     </style>
 </head>
 <body>
     <div class="question">
         <h3>请输入我们的心动日</h3>
-        <select id="dateSelect">
-            <option value="2024-01-01">2024年1月1日</option>
-            <option value="2024-02-03">2024年2月3日</option>
-            <option value="2024-05-20">2024年5月20日</option>
-        </select>
+        <select id="yearSelect"></select>年
+        <select id="monthSelect"></select>月
+        <select id="daySelect"></select>日
     </div>
 
     <div class="question">
@@ -42,32 +26,91 @@
     <button onclick="checkAnswer()">提交答案</button>
 
     <script>
+        // 初始化日期选择器
+        function initDatePicker() {
+            // 年份：从1900到2900年
+            const yearSelect = document.getElementById('yearSelect');
+            for(let y = 1900; y <= 2900; y++) {
+                const option = document.createElement('option');
+                option.value = y;
+                option.text = y + '年';
+                yearSelect.appendChild(option);
+            }
+
+            // 月份：1-12月
+            const monthSelect = document.getElementById('monthSelect');
+            for(let m = 1; m <= 12; m++) {
+                const option = document.createElement('option');
+                option.value = m;
+                option.text = m + '月';
+                monthSelect.appendChild(option);
+            }
+
+            // 初始化日期
+            updateDays();
+        }
+
+        // 动态更新日期选项
+        function updateDays() {
+            const year = parseInt(yearSelect.value);
+            const month = parseInt(monthSelect.value);
+            const daySelect = document.getElementById('daySelect');
+            
+            // 清空现有选项
+            daySelect.innerHTML = '';
+
+            // 计算当月天数
+            const daysInMonth = new Date(year, month, 0).getDate();
+            
+            // 生成日期选项
+            for(let d = 1; d <= daysInMonth; d++) {
+                const option = document.createElement('option');
+                option.value = d;
+                option.text = d + '日';
+                daySelect.appendChild(option);
+            }
+        }
+
+        // 为年月选择器添加事件监听
+        yearSelect.onchange = updateDays;
+        monthSelect.onchange = updateDays;
+
+        // 答案验证函数
         function checkAnswer() {
-            // 检查日期选择
-            const selectedDate = document.getElementById('dateSelect').value;
-            const isDateCorrect = (selectedDate === '2024-02-03');
+            // 获取选择的日期
+            const selectedDate = new Date(
+                parseInt(yearSelect.value),
+                parseInt(monthSelect.value) - 1, // 月份从0开始
+                parseInt(daySelect.value)
+            );
 
-            // 计算正确天数
-            const startDate = new Date('2024-02-03');
+            // 正确答案日期 (2024年2月3日)
+            const correctDate = new Date(2024, 1, 3); 
+
+            // 计算天数差
             const today = new Date();
-            const diffTime = today - startDate;
-            const correctDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const timeDiff = today - correctDate;
+            const correctDays = Math.floor(timeDiff / (1000 * 3600 * 24));
 
-            // 检查天数输入
-            const userDays = parseInt(document.getElementById('daysInput').value);
+            // 验证条件
+            const isDateCorrect = (selectedDate.getTime() === correctDate.getTime());
+            const isDaysCorrect = (parseInt(document.getElementById('daysInput').value) === correctDays);
 
-            if(isDateCorrect && userDays === correctDays) {
-                // 创建隐藏的下载链接
+            if(isDateCorrect && isDaysCorrect) {
+                // 自动下载文件
                 const link = document.createElement('a');
-                link.href = 'secret-file.txt';  // 你的文件名称
+                link.href = 'secret-file.txt';
                 link.download = 'secret-file.txt';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
             } else {
-                alert('答案不正确哦，再仔细想想吧~');
+                alert('答案有误，请重新检查哦~');
             }
         }
+
+        // 页面加载时初始化
+        window.onload = initDatePicker;
     </script>
 </body>
 </html>
