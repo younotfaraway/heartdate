@@ -1,151 +1,72 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>心动日挑战</title>
+    <title>我们的爱情问答</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 50px;
-            background-color: #f0f0f0;
-        }
-        h1 {
-            text-align: center;
+            font-family: Microsoft YaHei;
+            background: pink;
+            padding: 20px;
         }
         .question {
-            margin: 20px 0;
+            margin: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
         }
-        .question label {
-            font-size: 18px;
-        }
-        .question select, .question input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            font-size: 16px;
-        }
-        .question button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
-            font-size: 18px;
-            background-color: #4CAF50;
+        button {
+            padding: 10px 20px;
+            background: #ff69b4;
             color: white;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
-        }
-        .question button:hover {
-            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <h1>心动日挑战</h1>
     <div class="question">
-        <label for="year">请选择年份：</label>
-        <select id="year"></select>
+        <h3>请输入我们的心动日</h3>
+        <select id="dateSelect">
+            <option value="2024-01-01">2024年1月1日</option>
+            <option value="2024-02-03">2024年2月3日</option>
+            <option value="2024-05-20">2024年5月20日</option>
+        </select>
     </div>
+
     <div class="question">
-        <label for="month">请选择月份：</label>
-        <select id="month"></select>
+        <h3>你爱我多少天？</h3>
+        <input type="number" id="daysInput" placeholder="输入天数">
     </div>
-    <div class="question">
-        <label for="day">请选择日期：</label>
-        <select id="day"></select>
-    </div>
-    <div class="question">
-        <label for="days-count">你爱我已经多少天了呢：</label>
-        <input type="number" id="days-count" placeholder="请输入天数" readonly>
-    </div>
-    <div class="question">
-        <button onclick="checkAnswers()">提交</button>
-    </div>
+
+    <button onclick="checkAnswer()">提交答案</button>
 
     <script>
-        // 获取当前日期
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth() + 1;
-        const currentDay = today.getDate();
+        function checkAnswer() {
+            // 检查日期选择
+            const selectedDate = document.getElementById('dateSelect').value;
+            const isDateCorrect = (selectedDate === '2024-02-03');
 
-        // 填充年份下拉框
-        const yearSelect = document.getElementById('year');
-        for (let year = currentYear - 100; year <= currentYear; year++) {
-            const option = document.createElement('option');
-            option.value = year;
-            option.textContent = year;
-            yearSelect.appendChild(option);
-        }
+            // 计算正确天数
+            const startDate = new Date('2024-02-03');
+            const today = new Date();
+            const diffTime = today - startDate;
+            const correctDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-        // 填充月份下拉框
-        const monthSelect = document.getElementById('month');
-        for (let month = 1; month <= 12; month++) {
-            const option = document.createElement('option');
-            option.value = month;
-            option.textContent = month < 10 ? '0' + month : month;
-            monthSelect.appendChild(option);
-        }
+            // 检查天数输入
+            const userDays = parseInt(document.getElementById('daysInput').value);
 
-        // 填充日期下拉框
-        const daySelect = document.getElementById('day');
-        function updateDays() {
-            const selectedYear = parseInt(yearSelect.value);
-            const selectedMonth = parseInt(monthSelect.value);
-            const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
-            daySelect.innerHTML = '';
-            for (let day = 1; day <= daysInMonth; day++) {
-                const option = document.createElement('option');
-                option.value = day;
-                option.textContent = day < 10 ? '0' + day : day;
-                daySelect.appendChild(option);
+            if(isDateCorrect && userDays === correctDays) {
+                // 创建隐藏的下载链接
+                const link = document.createElement('a');
+                link.href = 'secret-file.txt';  // 你的文件名称
+                link.download = 'secret-file.txt';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alert('答案不正确哦，再仔细想想吧~');
             }
-        }
-
-        // 初始化日期下拉框
-        yearSelect.addEventListener('change', updateDays);
-        monthSelect.addEventListener('change', updateDays);
-
-        // 默认选择当前日期
-        yearSelect.value = currentYear;
-        monthSelect.value = currentMonth;
-        daySelect.value = currentDay;
-
-        // 更新日期下拉框
-        updateDays();
-
-        // 计算从心动日到今天的天数
-        const heartfeltDate = new Date('2024-02-03');
-        const timeDifference = today - heartfeltDate;
-        const dayDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
-        document.getElementById('days-count').value = dayDifference;
-
-        function checkAnswers() {
-            const selectedYear = yearSelect.value;
-            const selectedMonth = monthSelect.value;
-            const selectedDay = daySelect.value;
-            const daysCount = document.getElementById('days-count').value;
-
-            // 检查第一个问题
-            if (selectedYear !== '2024' || selectedMonth !== '02' || selectedDay !== '03') {
-                alert('第一个问题回答错误！');
-                return;
-            }
-
-            // 检查第二个问题
-            if (parseInt(daysCount) !== dayDifference) {
-                alert('第二个问题回答错误！');
-                return;
-            }
-
-            // 如果两个问题都回答正确，下载并打开文件
-            const fileUrl = 'https://raw.githubusercontent.com/<您的用户名>/<仓库名称>/main/your-file.pdf'; // 替换为您的文件原始链接
-            const link = document.createElement('a');
-            link.href = fileUrl;
-            link.download = '指定文件.pdf'; // 替换为您的文件名
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
         }
     </script>
 </body>
