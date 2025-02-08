@@ -5,7 +5,7 @@
     <style>
         /* 新增玫瑰金背景色 */
         body {
-            background: #b76e79 url('你的长图片背景链接') center/cover fixed; /* 替换此处图片链接 */
+            background: #b76e79 url('你的长图片背景链接') center/cover fixed; /* 替换此处：长图片背景链接 */
         }
 
         /* 修改成功页样式 */
@@ -24,45 +24,49 @@
     </style>
 </head>
 <body>
-    <!-- 省略其他相同结构... -->
+    <!-- 音乐播放部分 -->
+    <audio id="bgMusic" src="你的音乐链接" loop autoplay controls style="display: block; margin: 20px auto;">
+        <!-- 替换此处：音乐链接 -->
+        您的浏览器不支持 audio 标签。
+    </audio>
 
     <!-- 修改问题页文本 -->
     <div class="main-container">
         <div id="questionPage">
-            <h2 style="color: #ff69b4; margin-bottom: 30px;">❤️ 请输入我们的心动日 ❤️</h2> <!-- 修改标题 -->
-            <input type="number" id="daysInput" placeholder="请回答爱我多少天"> <!-- 修改placeholder -->
+            <h2 style="color: #ff69b4; margin-bottom: 30px;">❤️ 请输入我们的心动日 ❤️</h2> <!-- 替换此处：标题文字（如有需要） -->
+            <input type="number" id="daysInput" placeholder="请回答爱我多少天"> <!-- 替换此处：placeholder提示文字 -->
             
-            <div id="errorMsg">⚠️ 错了哦小乖 敲你脑袋！</div> <!-- 修改错误提示 -->
+            <div id="errorMsg">⚠️ 错了哦小乖 敲你脑袋！</div> <!-- 替换此处：错误提示文字 -->
         </div>
 
         <!-- 修改成功页内容 -->
         <div id="successPage">
             <div class="memory-box">
-                <img src="你的长图片链接" alt="记忆长廊" style="width:100%"> <!-- 替换此处图片链接 -->
+                <img src="你的长图片链接" alt="记忆长廊" style="width:100%"> <!-- 替换此处：记忆长廊图片链接 -->
             </div>
-            <button onclick="downloadAndOpen()">开始心动</button> <!-- 新增按钮 -->
+            <button onclick="downloadAndOpen()">开始心动</button> <!-- 按钮文字可根据需要修改 -->
         </div>
     </div>
 
     <script>
-        // 修改下载函数（替换下方两个链接）
+        // 下载和打开文件的函数，替换下方两个链接
         function downloadAndOpen() {
-            // 下载链接（替换成你的实际文件链接）
-            const downloadLink = 'https://example.com/secret-file.pdf';
-            // 直接打开链接（替换成同个文件链接）
-            const openLink = 'https://example.com/secret-file.pdf';
+            // 下载链接（替换成你的实际文件下载链接）
+            const downloadLink = 'https://example.com/secret-file.pdf'; // 替换此处：实际文件下载链接
+            // 直接打开链接（替换成同个文件的实际链接）
+            const openLink = 'https://example.com/secret-file.pdf'; // 替换此处：实际文件查看链接
             
-            // 创建隐藏的 <a> 标签
+            // 创建隐藏的 <a> 标签用于触发下载
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = downloadLink;
-            a.download = ''; // 如果需要指定下载后的文件名，可以在此设置
+            a.download = ''; // 如需指定下载后的文件名，可在此设置，如 a.download = '文件名.pdf';
             document.body.appendChild(a);
             
             // 模拟点击以触发下载
             a.click();
             
-            // 移除 <a> 标签
+            // 下载后移除该 <a> 标签
             document.body.removeChild(a);
             
             // 新窗口打开文件
