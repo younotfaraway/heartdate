@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>心动记忆挑战</title>
     <style>
         /* 新增玫瑰金背景色 */
         body {
-            background: #b76e79 url('https://github.com/younotfaraway/heartdate/blob/main/taking%20care%20of%20my%20only%20flower.jpg') center/cover fixed; /* 替换此处：长图片背景链接 */
+            background: #b76e79 url('你的长图片背景链接') center/cover fixed; /* 替换此处：长图片背景链接 */
         }
 
         /* 修改成功页样式 */
@@ -25,26 +26,32 @@
 </head>
 <body>
     <!-- 音乐播放部分 -->
-    <audio id="bgMusic" src="https://github.com/younotfaraway/heartdate/blob/main/1905159807.mp3" loop autoplay controls style="display: block; margin: 20px auto;">
+    <audio id="bgMusic" src="你的音乐链接" loop autoplay controls style="display: block; margin: 20px auto;">
         <!-- 替换此处：音乐链接 -->
         您的浏览器不支持 audio 标签。
     </audio>
 
-    <!-- 修改问题页文本 -->
+    <!-- 问题页和成功页容器 -->
     <div class="main-container">
+        <!-- 问题页 -->
         <div id="questionPage">
-            <h2 style="color: #ff69b4; margin-bottom: 30px;">❤️ 请输入我们的心动日 ❤️</h2> <!-- 替换此处：标题文字（如有需要） -->
-            <input type="number" id="daysInput" placeholder="请回答爱我多少天"> <!-- 替换此处：placeholder提示文字 -->
+            <h2 style="color: #ff69b4; margin-bottom: 30px;">❤️ 请输入我们的心动日 ❤️</h2> 
+            <!-- 替换此处：标题文字（如有需要） -->
+            <input type="number" id="daysInput" placeholder="请回答爱我多少天"> 
+            <!-- 替换此处：placeholder提示文字 -->
             
-            <div id="errorMsg">⚠️ 错了哦小乖 敲你脑袋！</div> <!-- 替换此处：错误提示文字 -->
+            <div id="errorMsg" style="display:none;">错了哦小乖，敲你脑袋</div> 
+            <!-- 修改错误提示文字为：错了哦小乖，敲你脑袋 -->
         </div>
 
-        <!-- 修改成功页内容 -->
-        <div id="successPage">
+        <!-- 成功页 -->
+        <div id="successPage" style="display:none;">
             <div class="memory-box">
-                <img src="你的长图片链接" alt="记忆长廊" style="width:100%"> <!-- 替换此处：记忆长廊图片链接 -->
+                <img src="你的长图片链接" alt="记忆长廊" style="width:100%"> 
+                <!-- 替换此处：记忆长廊图片链接，确保链接正确，否则会出现404 not found -->
             </div>
-            <button onclick="downloadAndOpen()">开始心动</button> <!-- 按钮文字可根据需要修改 -->
+            <button onclick="downloadAndOpen()">开始心动</button>
+            <!-- 按钮文字可根据需要修改 -->
         </div>
     </div>
 
@@ -60,7 +67,7 @@
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = downloadLink;
-            a.download = 'https://github.com/younotfaraway/heartdate/blob/main/%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf'; // 如需指定下载后的文件名，可在此设置，如 a.download = '文件名.pdf';
+            a.download = ''; // 如需指定下载后的文件名，可在此设置，例如：a.download = '文件名.pdf';
             document.body.appendChild(a);
             
             // 模拟点击以触发下载
@@ -73,8 +80,34 @@
             window.open(openLink, '_blank');
         }
 
-        /* 保持原有音乐播放逻辑不变 */
-        /* 保持日期验证逻辑不变 */
+        // 示例：检查用户输入的天数是否正确，若正确则显示 successPage，否则显示错误提示
+        document.getElementById("daysInput").addEventListener("change", function() {
+            const correctDays = 365; // 示例正确答案，请替换为实际值
+            const userDays = parseInt(this.value, 10);
+            if (userDays === correctDays) {
+                document.getElementById("questionPage").style.display = "none";
+                document.getElementById("successPage").style.display = "block";
+            } else {
+                // 显示错误提示
+                document.getElementById("errorMsg").style.display = "block";
+            }
+        });
+
+        /* 
+         * 关于音乐链接无效的问题：
+         * 1. 请检查替换的音乐链接是否正确且可访问。
+         * 2. 确保音乐文件格式受当前浏览器支持（如 MP3、OGG 等）。
+         * 3. 某些浏览器会阻止自动播放音乐（尤其在页面未与用户交互前），
+         *    可以尝试点击控制条或页面后再播放音乐。
+         * 4. 检查服务器是否配置了正确的 CORS 头部（跨域资源共享）。
+         */
+
+        /* 
+         * 关于长图页面显示 404 not found 的问题：
+         * 1. 请确保“你的长图片背景链接”及成功页中 <img> 标签的 src 属性指向正确的图片 URL。
+         * 2. 如果链接不正确或文件不存在，浏览器将返回 404 错误。
+         * 3. 建议将图片上传至可靠服务器或 CDN，并确保链接路径正确无误。
+         */
     </script>
 </body>
 </html>
