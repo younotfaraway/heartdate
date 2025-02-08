@@ -7,128 +7,161 @@
             font-family: "Microsoft YaHei", sans-serif;
             background: url('https://raw.githubusercontent.com/younotfaraway/heartdate/main/F48AE47560E07F9375310E56B3EEFACC.jpg') center/cover fixed;
             min-height: 100vh;
-            padding: 20px;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center; /* 新增垂直居中 */
             position: relative;
         }
 
-        /* 新增成功页面样式 */
-        #successPage {
-            display: none;
-            text-align: center;
+        .main-container {
             background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 90%;
             max-width: 600px;
             margin: 20px auto;
         }
 
         #playButton {
-            margin: 30px auto;
-            order: -1; /* 将按钮移到最前面 */
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 10;
         }
 
-        .question {
-            margin: 20px auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            max-width: 600px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .question-group {
             text-align: center;
+            margin: 25px 0;
         }
 
         select, input {
-            padding: 10px;
-            margin: 5px;
+            padding: 12px;
+            margin: 8px;
             border: 2px solid #ff69b4;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
-            width: 120px;
+            width: 140px;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(255,105,180,0.3);
         }
 
         #daysInput {
-            width: 200px;
+            width: 220px;
             display: block;
-            margin: 10px auto;
+            margin: 15px auto;
+            padding: 12px 20px;
         }
 
         button {
-            padding: 15px 30px;
+            padding: 16px 40px;
             background: linear-gradient(135deg, #ff69b4, #ff1493);
             color: white;
             border: none;
-            border-radius: 30px;
+            border-radius: 35px;
             font-size: 18px;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 25px auto;
         }
 
         button:hover {
             transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255,105,180,0.4);
         }
 
         #errorMsg {
             color: #ff4444;
             text-align: center;
-            margin-top: 15px;
+            margin: 20px 0;
             display: none;
+            font-weight: bold;
         }
 
-        #nextStepButton {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 4px 15px rgba(255,105,180,0.3);
+        #successPage {
+            display: none;
+            text-align: center;
+        }
+
+        .step-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #ff69b4;
         }
     </style>
 </head>
 <body>
+    <div class="step-indicator">第1步/共2步</div>
+    
     <!-- 音乐控制 -->
     <button id="playButton" onclick="playMusic()">🎵 点击播放背景音乐</button>
 
-    <!-- 问题页面 -->
-    <div id="questionPage">
-        <div class="question">
-            <h3>❤️ 请选择我们的纪念日 ❤️</h3>
-            <select id="yearSelect">
-                <option value="" disabled selected>选择年份</option>
-            </select>
-            <select id="monthSelect">
-                <option value="" disabled selected>选择月份</option>
-            </select>
-            <select id="daySelect">
-                <option value="" disabled selected>选择日期</option>
-            </select>
+    <!-- 主内容容器 -->
+    <div class="main-container">
+        <!-- 问题页面 -->
+        <div id="questionPage">
+            <div class="question-group">
+                <h2 style="color: #ff69b4; margin-bottom: 30px;">❤️ 我们的纪念日 ❤️</h2>
+                <div class="date-selector">
+                    <select id="yearSelect">
+                        <option value="" disabled selected>选择年份</option>
+                    </select>
+                    <select id="monthSelect">
+                        <option value="" disabled selected>选择月份</option>
+                    </select>
+                    <select id="daySelect">
+                        <option value="" disabled selected>选择日期</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <h2 style="color: #ff69b4; margin: 40px 0 25px;">💞 相爱天数验证 💞</h2>
+                <input type="number" id="daysInput" placeholder="请输入天数">
+            </div>
+
+            <button onclick="validateAnswers()">提交验证</button>
+            <div id="errorMsg">⚠️ 答案有误，请重新检查！</div>
         </div>
 
-        <div class="question">
-            <h3>💖 我们相爱的天数 💖</h3>
-            <input type="number" id="daysInput" placeholder="输入天数">
+        <!-- 成功页面 -->
+        <div id="successPage">
+            <h2 style="color: #ff69b4; margin-bottom: 30px;">🎉 验证成功！</h2>
+            <p style="font-size: 18px; margin-bottom: 40px;">即将为你打开爱的记忆...</p>
+            <button onclick="downloadSecret()">开启秘密文件</button>
         </div>
-
-        <button onclick="validateAnswers()">提交答案</button>
-        <div id="errorMsg">答案有误，请重新检查！</div>
-    </div>
-
-    <!-- 成功页面 -->
-    <div id="successPage">
-        <h2>🎉 恭喜你答对了！</h2>
-        <p>我们的爱情记忆正在加载...</p>
-        <button id="nextStepButton" onclick="downloadSecret()">✨ 下一步</button>
     </div>
 
     <audio id="backgroundMusic" src="https://raw.githubusercontent.com/younotfaraway/heartdate/main/%E3%82%B5%E3%83%8B%E3%83%BC%E3%83%9C%E3%83%BC%E3%82%A4%E3%83%BB%E3%83%A9%E3%83%97%E3%82%BD%E3%83%87%E3%82%A3.mp3"></audio>
 
     <script>
+        // 音乐播放控制
+        function playMusic() {
+            const music = document.getElementById('backgroundMusic');
+            try {
+                music.play();
+                document.getElementById('playButton').style.display = 'none';
+            } catch (error) {
+                alert('音乐播放失败，请检查浏览器设置或网络连接');
+            }
+        }
+
         // 初始化日期选择器
         function initDatePicker() {
             const yearSelect = document.getElementById('yearSelect');
+            // 清空现有选项
+            yearSelect.innerHTML = '<option value="" disabled selected>选择年份</option>';
             for(let y = 2025; y >= 2000; y--) {
                 const option = new Option(y + '年', y);
                 if (y === 2024) option.selected = true;
@@ -136,6 +169,7 @@
             }
 
             const monthSelect = document.getElementById('monthSelect');
+            monthSelect.innerHTML = '<option value="" disabled selected>选择月份</option>';
             for(let m = 1; m <= 12; m++) {
                 const option = new Option(m + '月', m);
                 monthSelect.add(option);
@@ -148,11 +182,79 @@
             const year = parseInt(yearSelect.value);
             const month = parseInt(monthSelect.value);
             const daySelect = document.getElementById('daySelect');
-
+            
             daySelect.innerHTML = '<option value="" disabled selected>选择日期</option>';
-
+            
             if(year && month) {
                 const daysInMonth = new Date(year, month, 0).getDate();
                 for(let d = 1; d <= daysInMonth; d++) {
                     const option = new Option(d + '日', d);
-                    day
+                    daySelect.add(option);
+                }
+            }
+        }
+
+        // 答案验证
+        function validateAnswers() {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.style.display = 'none';
+
+            // 获取用户输入
+            const userYear = parseInt(yearSelect.value);
+            const userMonth = parseInt(monthSelect.value);
+            const userDay = parseInt(daySelect.value);
+            const userDays = parseInt(document.getElementById('daysInput').value);
+
+            // 计算正确答案
+            const correctDate = new Date(2024, 1, 3); // 2024年2月3日
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const timeDiff = today - correctDate;
+            const correctDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+
+            // 验证逻辑
+            const isDateCorrect = userYear === 2024 && userMonth === 2 && userDay === 3;
+            const isDaysCorrect = userDays === correctDays;
+
+            if(isDateCorrect && isDaysCorrect) {
+                showSuccessPage();
+            } else {
+                showError();
+            }
+        }
+
+        function showSuccessPage() {
+            document.getElementById('questionPage').style.display = 'none';
+            document.getElementById('successPage').style.display = 'block';
+            document.querySelector('.step-indicator').textContent = '第2步/共2步';
+        }
+
+        function showError() {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.style.display = 'block';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        function downloadSecret() {
+            const link = document.createElement('a');
+            link.href = 'https://raw.githubusercontent.com/younotfaraway/heartdate/main/secret-file.txt';
+            link.download = '爱的秘密.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 初始化事件
+        window.addEventListener('load', () => {
+            initDatePicker();
+            document.getElementById('playButton').style.display = 'block';
+        });
+
+        document.getElementById('yearSelect').addEventListener('change', updateDays);
+        document.getElementById('monthSelect').addEventListener('change', updateDays);
+    </script>
+</body>
+</html>
