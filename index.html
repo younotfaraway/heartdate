@@ -1,43 +1,34 @@
+            <button onclick="validateAnswers()">提交验证</button>
+            <div id="errorMsg">⚠️ 错了哦小乖，敲你脑袋！</div>
+        </div>
+
         <!-- 成功过渡页 -->
         <div id="successPage">
-            <h2 style="color: #ff69b4; margin-bottom: 30px;">🎉 爱你小乖！</h2>
-            <p style="font-size: 18px; margin-bottom: 40px;">欢迎收看su的养花手册...</p>
+            <h2 style="color: #ff69b4; margin-bottom: 30px;">🎉 验证成功！</h2>
+            <p style="font-size: 18px; margin-bottom: 40px;">记忆加载中...</p>
         </div>
     </div>
 
-    <!-- ⭐️最终展示页面（独立容器） -->
+    <!-- 最终页面 -->
     <div class="main-container" id="finalPage">
-        <h2 style="color: #ff69b4; margin-bottom: 30px;">🎉 记忆重现时刻 🎉</h2>
+        <h2 style="color: #ff69b4; margin-bottom: 30px;">💖 心动时刻 💖</h2>
         <div class="photo-frame">
-            <!-- ⭐️替换以下图片链接 -->
-            <img src="https://github.com/younotfaraway/heartdate/blob/main/taking%20care%20of%20my%20only%20flower.jpg" alt="我们的记忆">
+            <!-- ⭐️替换图片链接 -->
+            <img src="https://example.com/your-image.jpg" alt="专属记忆">
         </div>
-        <button onclick="downloadSecret()" style="margin-top: 40px;">开始心动</button>
+        <button onclick="downloadSecret()" style="margin-top: 40px;">✨ 开始心动 ✨</button>
     </div>
 
-    <!-- ⭐️音乐播放器（确认音乐链接有效） -->
-    <audio id="backgroundMusic" src="https://github.com/younotfaraway/heartdate/blob/main/1905159807.mp3"></audio>
+    <!-- ⭐️背景音乐（替换音乐链接） -->
+    <audio id="backgroundMusic" src="https://raw.githubusercontent.com/younotfaraway/heartdate/main/sound.mp3"></audio>
 
     <script>
-        // 音乐控制逻辑
-        let music = document.getElementById('backgroundMusic');
-        
-        function playMusic() {
-            try {
-                music.play();
-                document.getElementById('playButton').style.display = 'none';
-            } catch (error) {
-                alert('音乐播放失败，请检查浏览器设置');
-            }
-        }
-
-        // 日期选择器初始化
+        // 初始化日期选择器
         function initDatePicker() {
             const yearSelect = document.getElementById('yearSelect');
             yearSelect.innerHTML = '<option value="" disabled selected>选择年份</option>';
             for(let y = 2025; y >= 2000; y--) {
-                const option = new Option(y + '年', y);
-                yearSelect.add(option);
+                yearSelect.add(new Option(y + '年', y));
             }
 
             const monthSelect = document.getElementById('monthSelect');
@@ -48,7 +39,7 @@
             updateDays();
         }
 
-        // 日期更新逻辑
+        // 更新日期选项
         function updateDays() {
             const year = parseInt(yearSelect.value);
             const month = parseInt(monthSelect.value);
@@ -63,33 +54,33 @@
             }
         }
 
-        // ⭐️核心验证逻辑
+        // 验证逻辑
         function validateAnswers() {
             const errorMsg = document.getElementById('errorMsg');
             errorMsg.style.display = 'none';
 
-            // 获取用户输入
+            // 获取答案
             const userYear = parseInt(yearSelect.value);
             const userMonth = parseInt(monthSelect.value);
             const userDay = parseInt(daySelect.value);
             const userDays = parseInt(document.getElementById('daysInput').value);
 
             // 计算正确答案
-            const correctDate = new Date(2024, 1, 3); // 月份从0开始计数（1表示二月）
+            const correctDate = new Date(2024, 1, 3); // 2024年2月3日
             const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const correctDays = Math.floor((today - correctDate) / (1000 * 3600 * 24));
+            today.setHours(0,0,0,0);
+            const correctDays = Math.floor((today - correctDate) / 86400000);
 
-            // 验证结果处理
+            // 验证结果
             if(userYear === 2024 && userMonth === 2 && userDay === 3 && userDays === correctDays) {
-                showFinalPage();
+                showSuccessPage();
             } else {
                 showError();
             }
         }
 
-        // 页面跳转控制
-        function showFinalPage() {
+        // 显示成功页
+        function showSuccessPage() {
             document.getElementById('questionPage').style.display = 'none';
             document.getElementById('successPage').style.display = 'block';
             document.querySelector('.step-indicator').textContent = '第2步/共3步';
@@ -98,24 +89,35 @@
                 document.getElementById('successPage').style.display = 'none';
                 document.getElementById('finalPage').style.display = 'block';
                 document.querySelector('.step-indicator').textContent = '第3步/共3步';
-            }, 3000);
+            }, 2000);
         }
 
-        // ⭐️文件下载功能（替换下载链接）
+        // 显示错误
+        function showError() {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.style.display = 'block';
+            setTimeout(() => errorMsg.style.display = 'none', 3000);
+        }
+
+        // 文件下载
         function downloadSecret() {
             const link = document.createElement('a');
-            link.href = 'https://github.com/younotfaraway/heartdate/blob/main/%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf'; // 替换为实际文件地址
-            link.download = '爱的秘密.txt';
+            link.href = 'https://example.com/secret-file.pdf'; // ⭐️替换下载链接
+            link.download = '心动时刻.pdf';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // 错误提示处理
-        function showError() {
-            const errorMsg = document.getElementById('errorMsg');
-            errorMsg.style.display = 'block';
-            setTimeout(() => errorMsg.style.display = 'none', 3000);
+        // 音乐控制
+        const music = document.getElementById('backgroundMusic');
+        function playMusic() {
+            try {
+                music.play();
+                document.getElementById('playButton').style.display = 'none';
+            } catch {
+                alert('请允许播放背景音乐哦~');
+            }
         }
 
         // 音乐状态保持
@@ -126,17 +128,17 @@
 
         // 初始化
         window.addEventListener('load', () => {
+            // 恢复音乐状态
             const savedTime = localStorage.getItem('musicTime');
             const wasPlaying = localStorage.getItem('musicPlaying') === 'true';
-            
             if (savedTime) {
                 music.currentTime = savedTime;
                 if (wasPlaying) {
-                    music.play();
+                    music.play().catch(() => {});
                     document.getElementById('playButton').style.display = 'none';
                 }
             }
-            
+
             initDatePicker();
             document.getElementById('yearSelect').addEventListener('change', updateDays);
             document.getElementById('monthSelect').addEventListener('change', updateDays);
