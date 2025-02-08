@@ -2,112 +2,307 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>心动记忆挑战</title>
+    <title>爱的记忆挑战</title>
     <style>
-        /* 新增玫瑰金背景色 */
+        /* 页面整体字体和背景设置 */
         body {
-            background: #b76e79 url('https://github.com/younotfaraway/heartdate/blob/main/taking%20care%20of%20my%20only%20flower.jpg') center/cover fixed; /* 替换此处：长图片背景链接 */
+            font-family: "Microsoft YaHei", sans-serif;
+            /* 替换此处：背景图片链接（确保图片存在且链接正确） */
+            background: url('https://raw.githubusercontent.com/younotfaraway/heartdate/main/F48AE47560E07F9375310E56B3EEFACC.jpg') center/cover fixed;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* 垂直居中 */
+            position: relative;
         }
 
-        /* 修改成功页样式 */
-        #successPage {
-            background: rgba(183, 110, 121, 0.95); /* 玫瑰金透明背景 */
+        /* 主容器样式 */
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
         }
 
-        /* 新增长图片容器样式 */
-        .memory-box {
-            width: 100%;
-            max-height: 400px;
-            overflow: hidden;
-            border-radius: 15px;
+        /* 音乐播放按钮样式 */
+        #playButton {
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 问题组样式 */
+        .question-group {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        /* 日期选择器、输入框样式 */
+        select, input {
+            padding: 12px;
+            margin: 8px;
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            font-size: 16px;
+            width: 140px;
+            transition: all 0.3s ease;
+        }
+        select:focus, input:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(255,105,180,0.3);
+        }
+        #daysInput {
+            width: 220px;
+            display: block;
+            margin: 15px auto;
+            padding: 12px 20px;
+        }
+
+        /* 按钮样式 */
+        button {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            border-radius: 35px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 25px auto;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255,105,180,0.4);
+        }
+
+        /* 错误提示样式（初始隐藏） */
+        #errorMsg {
+            color: #ff4444;
+            text-align: center;
             margin: 20px 0;
+            display: none;
+            font-weight: bold;
+        }
+
+        /* 成功页面初始隐藏 */
+        #successPage {
+            display: none;
+            text-align: center;
+        }
+
+        /* 步骤指示器样式 */
+        .step-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #ff69b4;
         }
     </style>
 </head>
 <body>
-    <!-- 音乐播放部分 -->
-    <audio id="bgMusic" src="https://github.com/younotfaraway/heartdate/blob/main/1905159807.mp3" loop autoplay controls style="display: block; margin: 20px auto;">
-        <!-- 替换此处：音乐链接 -->
-        您的浏览器不支持 audio 标签。
-    </audio>
+    <!-- 步骤指示器 -->
+    <div class="step-indicator">第1步/共2步</div>
+    
+    <!-- 音乐控制按钮，点击后触发播放 -->
+    <button id="playButton" onclick="playMusic()">🎵 点击播放背景音乐</button>
 
-    <!-- 问题页和成功页容器 -->
+    <!-- 主内容容器 -->
     <div class="main-container">
-        <!-- 问题页 -->
+        <!-- 问题页面 -->
         <div id="questionPage">
-            <h2 style="color: #ff69b4; margin-bottom: 30px;">❤️ 请输入我们的心动日 ❤️</h2> 
-            <!-- 替换此处：标题文字（如有需要） -->
-            <input type="number" id="daysInput" placeholder="请回答爱我多少天"> 
-            <!-- 替换此处：placeholder提示文字 -->
-            
-            <div id="errorMsg" style="display:none;">错了哦小乖，敲你脑袋</div> 
-            <!-- 修改错误提示文字为：错了哦小乖，敲你脑袋 -->
+            <div class="question-group">
+                <!-- 修改日期问题标题为“请输入我们的心动日” -->
+                <h2 style="color: #ff69b4; margin-bottom: 30px;">请输入我们的心动日</h2>
+                <div class="date-selector">
+                    <!-- 替换：年份选择框（选项将在初始化时添加） -->
+                    <select id="yearSelect">
+                        <option value="" disabled selected>选择年份</option>
+                    </select>
+                    <!-- 替换：月份选择框 -->
+                    <select id="monthSelect">
+                        <option value="" disabled selected>选择月份</option>
+                    </select>
+                    <!-- 替换：日期选择框 -->
+                    <select id="daySelect">
+                        <option value="" disabled selected>选择日期</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <!-- 修改天数问题标题为“请回答爱我多少天” -->
+                <h2 style="color: #ff69b4; margin: 40px 0 25px;">请回答爱我多少天</h2>
+                <!-- 替换此处：输入提示文字 -->
+                <input type="number" id="daysInput" placeholder="请输入天数">
+            </div>
+
+            <!-- 修改提交按钮文字为“开始心动” -->
+            <button onclick="validateAnswers()">开始心动</button>
+            <!-- 修改错误提示为“错了哦小乖，敲你脑袋！” -->
+            <div id="errorMsg">错了哦小乖，敲你脑袋！</div>
         </div>
 
-        <!-- 成功页 -->
-        <div id="successPage" style="display:none;">
-            <div class="memory-box">
-                <img src="你的长图片链接" alt="记忆长廊" style="width:100%"> 
-                <!-- 替换此处：记忆长廊图片链接，确保链接正确，否则会出现404 not found -->
-            </div>
-            <button onclick="downloadAndOpen()">开始心动</button>
-            <!-- 按钮文字可根据需要修改 -->
+        <!-- 成功页面 -->
+        <div id="successPage">
+            <h2 style="color: #ff69b4; margin-bottom: 30px;">🎉 验证成功！</h2>
+            <p style="font-size: 18px; margin-bottom: 40px;">即将为你打开爱的记忆...</p>
+            <!-- 第一个文件下载按钮，链接为 PDF 文件 -->
+            <button onclick="downloadSecret()">开启秘密文件</button>
+            <!-- 增加第二个文件下载按钮，链接为 JPG 文件 -->
+            <button onclick="downloadExtra()">开启第二秘密文件</button>
         </div>
     </div>
 
+    <!-- 音乐播放器：替换此处：音乐链接（确保链接正确、文件格式支持） -->
+    <audio id="backgroundMusic" src="https://raw.githubusercontent.com/younotfaraway/heartdate/main/%E3%82%B5%E3%83%8B%E3%83%BC%E3%83%9C%E3%83%BC%E3%82%A4%E3%83%BB%E3%83%A9%E3%83%97%E3%82%BD%E3%83%87%E3%82%A3.mp3"></audio>
+
     <script>
-        // 下载和打开文件的函数，替换下方两个链接
-        function downloadAndOpen() {
-            // 下载链接（替换成你的实际文件下载链接）
-            const downloadLink = 'https://example.com/secret-file.pdf'; // 替换此处：实际文件下载链接
-            // 直接打开链接（替换成同个文件的实际链接）
-            const openLink = 'https://example.com/secret-file.pdf'; // 替换此处：实际文件查看链接
-            
-            // 创建隐藏的 <a> 标签用于触发下载
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = downloadLink;
-            a.download = 'https://github.com/younotfaraway/heartdate/blob/main/%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf'; // 如需指定下载后的文件名，可在此设置，例如：a.download = '文件名.pdf';
-            document.body.appendChild(a);
-            
-            // 模拟点击以触发下载
-            a.click();
-            
-            // 下载后移除该 <a> 标签
-            document.body.removeChild(a);
-            
-            // 新窗口打开文件
-            window.open(openLink, '_blank');
+        // 音乐播放控制函数：用户点击播放按钮后触发
+        function playMusic() {
+            const music = document.getElementById('backgroundMusic');
+            try {
+                // 播放音乐
+                music.play();
+                // 隐藏播放按钮
+                document.getElementById('playButton').style.display = 'none';
+            } catch (error) {
+                alert('音乐播放失败，请检查浏览器设置或网络连接');
+            }
         }
 
-        // 示例：检查用户输入的天数是否正确，若正确则显示 successPage，否则显示错误提示
-        document.getElementById("daysInput").addEventListener("change", function() {
-            const correctDays = 365; // 示例正确答案，请替换为实际值
-            const userDays = parseInt(this.value, 10);
-            if (userDays === correctDays) {
-                document.getElementById("questionPage").style.display = "none";
-                document.getElementById("successPage").style.display = "block";
-            } else {
-                // 显示错误提示
-                document.getElementById("errorMsg").style.display = "block";
+        // 初始化日期选择器，填充年份和月份选项
+        function initDatePicker() {
+            const yearSelect = document.getElementById('yearSelect');
+            // 清空现有选项并添加默认提示
+            yearSelect.innerHTML = '<option value="" disabled selected>选择年份</option>';
+            for(let y = 2025; y >= 2000; y--) {
+                const option = new Option(y + '年', y);
+                // 可选：默认选中某一年，例如2024
+                if (y === 2024) option.selected = true;
+                yearSelect.add(option);
             }
+
+            const monthSelect = document.getElementById('monthSelect');
+            monthSelect.innerHTML = '<option value="" disabled selected>选择月份</option>';
+            for(let m = 1; m <= 12; m++) {
+                const option = new Option(m + '月', m);
+                monthSelect.add(option);
+            }
+
+            updateDays();
+        }
+
+        // 根据选择的年份和月份更新日期选项
+        function updateDays() {
+            const yearSelect = document.getElementById('yearSelect');
+            const monthSelect = document.getElementById('monthSelect');
+            const year = parseInt(yearSelect.value);
+            const month = parseInt(monthSelect.value);
+            const daySelect = document.getElementById('daySelect');
+            
+            daySelect.innerHTML = '<option value="" disabled selected>选择日期</option>';
+            
+            if(year && month) {
+                const daysInMonth = new Date(year, month, 0).getDate();
+                for(let d = 1; d <= daysInMonth; d++) {
+                    const option = new Option(d + '日', d);
+                    daySelect.add(option);
+                }
+            }
+        }
+
+        // 答案验证函数
+        function validateAnswers() {
+            // 隐藏错误提示
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.style.display = 'none';
+
+            // 获取用户选择的日期和输入的天数
+            const yearSelect = document.getElementById('yearSelect');
+            const monthSelect = document.getElementById('monthSelect');
+            const daySelect = document.getElementById('daySelect');
+            const userYear = parseInt(yearSelect.value);
+            const userMonth = parseInt(monthSelect.value);
+            const userDay = parseInt(daySelect.value);
+            const userDays = parseInt(document.getElementById('daysInput').value);
+
+            // 计算正确的日期（注意：JavaScript 中月份从 0 开始计数，所以 2024年2月3日写成 new Date(2024, 1, 3)）
+            const correctDate = new Date(2024, 1, 3); // 正确日期：2024年2月3日
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const timeDiff = today - correctDate;
+            const correctDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+
+            // 验证用户输入的日期和天数是否正确
+            const isDateCorrect = userYear === 2024 && userMonth === 2 && userDay === 3;
+            const isDaysCorrect = userDays === correctDays;
+
+            if(isDateCorrect && isDaysCorrect) {
+                showSuccessPage();
+            } else {
+                showError();
+            }
+        }
+
+        // 显示成功页面，并更新步骤指示器
+        function showSuccessPage() {
+            document.getElementById('questionPage').style.display = 'none';
+            document.getElementById('successPage').style.display = 'block';
+            document.querySelector('.step-indicator').textContent = '第2步/共2步';
+        }
+
+        // 显示错误提示（修改为“错了哦小乖，敲你脑袋！”）
+        function showError() {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = '错了哦小乖，敲你脑袋！';
+            errorMsg.style.display = 'block';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        // 下载第一个秘密文件函数（下载 PDF 文件）
+        function downloadSecret() {
+            const link = document.createElement('a');
+            // 替换此处：秘密文件下载链接（PDF 文件链接）
+            link.href = 'https://github.com/younotfaraway/heartdate/blob/main/%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf';
+            link.download = '爱的秘密.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 下载第二个秘密文件函数（下载 JPG 文件）
+        function downloadExtra() {
+            const link = document.createElement('a');
+            // 替换此处：额外秘密文件下载链接（JPG 文件链接）
+            link.href = 'https://github.com/younotfaraway/heartdate/blob/main/taking%20care%20of%20my%20only%20flower.jpg';
+            link.download = '花儿的守护.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 页面加载后初始化日期选择器和显示播放按钮
+        window.addEventListener('load', () => {
+            initDatePicker();
+            document.getElementById('playButton').style.display = 'block';
         });
 
-        /* 
-         * 关于音乐链接无效的问题：
-         * 1. 请检查替换的音乐链接是否正确且可访问。
-         * 2. 确保音乐文件格式受当前浏览器支持（如 MP3、OGG 等）。
-         * 3. 某些浏览器会阻止自动播放音乐（尤其在页面未与用户交互前），
-         *    可以尝试点击控制条或页面后再播放音乐。
-         * 4. 检查服务器是否配置了正确的 CORS 头部（跨域资源共享）。
-         */
-
-        /* 
-         * 关于长图页面显示 404 not found 的问题：
-         * 1. 请确保“你的长图片背景链接”及成功页中 <img> 标签的 src 属性指向正确的图片 URL。
-         * 2. 如果链接不正确或文件不存在，浏览器将返回 404 错误。
-         * 3. 建议将图片上传至可靠服务器或 CDN，并确保链接路径正确无误。
-         */
+        // 为年份和月份选择器添加更改事件，以便更新日期选择器
+        document.getElementById('yearSelect').addEventListener('change', updateDays);
+        document.getElementById('monthSelect').addEventListener('change', updateDays);
     </script>
 </body>
 </html>
