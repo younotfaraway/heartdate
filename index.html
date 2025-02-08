@@ -142,8 +142,9 @@
         <div id="successPage">
             <h2 style="color: #ff69b4; margin-bottom: 30px;">🎉 耶，我爱你！</h2>
             <p style="font-size: 18px; margin-bottom: 40px;">关于我的爱意...</p>
-            <button onclick="downloadSecret()">开始心动</button>
+            <!-- 修改点1：调换按钮顺序 -->
             <button onclick="downloadExtra()">关于养花</button>
+            <button onclick="downloadSecret()">开始心动</button>
         </div>
     </div>
 
@@ -241,10 +242,11 @@
             }, 3000);
         }
 
-        // 修正下载链接
+        // 修改点2：保持页面不跳转的新下载方式
         function downloadSecret() {
             const link = document.createElement('a');
             link.href = 'https://raw.githubusercontent.com/younotfaraway/heartdate/main/%E4%BA%B2%E7%88%B1%E7%9A%84%E6%B1%9D.pdf';
+            link.target = '_blank'; // 新开标签页
             link.download = '爱的秘密.pdf';
             document.body.appendChild(link);
             link.click();
@@ -254,6 +256,7 @@
         function downloadExtra() {
             const link = document.createElement('a');
             link.href = 'https://raw.githubusercontent.com/younotfaraway/heartdate/main/taking%20care%20of%20my%20only%20flower.jpg';
+            link.target = '_blank'; // 新开标签页
             link.download = '花儿的守护.jpg';
             document.body.appendChild(link);
             link.click();
